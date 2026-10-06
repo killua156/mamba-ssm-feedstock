@@ -1,0 +1,31 @@
+tilelang and apache-tvm-ffi are only used by the optional Mamba-3 kernels,
+which are imported behind try/except. The exact tilelang==0.1.8 pin was a
+workaround for a tilelang bug that has since been fixed, the recipe declares
+these dependencies where conda-forge provides them.
+
+diff --git a/pyproject.toml b/pyproject.toml
+index a3d4d1a..09a3233 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -17,8 +17,6 @@ classifiers = [
+ ]
+ dependencies = [
+     "torch",
+-    "tilelang==0.1.8",
+-    "apache-tvm-ffi<=0.1.9",
+     "quack-kernels>=0.3.4",
+     "triton>=3.5.0",
+     "ninja",
+diff --git a/setup.py b/setup.py
+index f9c3320..f02af08 100755
+--- a/setup.py
++++ b/setup.py
+@@ -399,8 +399,6 @@ setup(
+         "einops",
+         "triton>=3.5.0",
+         "transformers",
+-        "tilelang==0.1.8",
+-        "apache-tvm-ffi<=0.1.9",
+         "quack-kernels>=0.3.4",
+         # "causal_conv1d>=1.4.0",
+     ],

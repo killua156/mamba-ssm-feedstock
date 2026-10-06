@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: mamba-ssm
-  version: "2.3.1"
+  version: "2.3.2.post1"
 
 package:
   name: ${{ name|lower }}
@@ -12,10 +12,12 @@ package:
 
 source:
   url: https://github.com/state-spaces/mamba/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: 36898524910beff6e8226a507b63f6c8e3df94c90d8fb0c7ece02c0125976c29
+  sha256: a49423a64dfccc5c46d8ba6c0fb50a3a8e48eee3e4c65b880b9fad5ac47383c2
+  patches:
+    - patches/0001-unpin-tilelang-and-apache-tvm-ffi.patch
 
 build:
-  number: 3
+  number: 0
   script:
     env:
       MAMBA_FORCE_BUILD: "TRUE"
@@ -51,7 +53,7 @@ requirements:
     - python
     - pytorch * cuda*
     - setuptools >=61.0.0
-    - triton
+    - triton >=3.5.0
     - wheel
   run:
     - causal-conv1d >=1.5.2
@@ -59,8 +61,16 @@ requirements:
     - packaging
     - python
     - pytorch * cuda*
+    - quack-kernels >=0.3.4
     - setuptools >=61.0.0
     - transformers
+    - triton >=3.5.0
+    # Only needed by the optional Mamba-3 MIMO kernels. conda-forge only has
+    # tilelang for linux-64 on Python 3.11 and newer.
+    - if: x86_64 and match(python, ">=3.11")
+      then:
+        - tilelang >=0.1.8
+        - apache-tvm-ffi <=0.1.12
 
 tests:
   - python:
